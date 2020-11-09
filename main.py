@@ -34,5 +34,9 @@ with open("logins.json","r") as file:
     dict = json.loads(file.read())
     secret = dict["discord_secret"]
 
+@bot.command()
+async def qauck(ctx):
+    await ctx.send("QAUCK QAUCK")
+
 bot.run(secret)
 
