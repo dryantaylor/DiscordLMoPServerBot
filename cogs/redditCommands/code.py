@@ -9,10 +9,11 @@ import praw
 class redditCommands(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
-        self.subs = [("cats", "cat_pictures.txt"),("dogpictures","dog_pictures.txt")]
+        #              (subname , link store file)
+        self.subs = [("cats", "cat_pictures.txt"),("dogpictures","dog_pictures.txt"),("snakes","snake_pictures.txt")]
         self.update_pictures()
         self.lastUpdated = datetime.datetime.now()
-        #self.lastUpdated -= datetime.timedelta(days = 2)
+        
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -21,32 +22,20 @@ class redditCommands(commands.Cog):
     @commands.command()
     async def cat_pic(self,ctx):
         imgFile = "./cogs/redditCommands/cat_pictures.txt"
-        now = datetime.datetime.now()
-        duration = now - self.lastUpdated
-        if duration.days >= 1.0:
-            self.update_pictures()
-            self.lastUpdated = now
-
-        with open(imgFile,"r") as file:
-            url = random.choice(file.readlines()).replace("\n","")
-        await ctx.send(url)
-
+        await self.send_random_link_from_file(ctx,imgFile)
+        
     @commands.command()
     async def dog_pic(self, ctx):
         imgFile = "./cogs/redditCommands/dog_pictures.txt"
-        now = datetime.datetime.now()
-        duration = now - self.lastUpdated
-        if duration.days >= 1.0:
-            self.update_pictures()
-            self.lastUpdated = now
-
-        with open(imgFile, "r") as file:
-            url = random.choice(file.readlines()).replace("\n", "")
-        await ctx.send(url)
-
-
-
-
+        await self.send_random_link_from_file(ctx,imgFile)
+     
+    
+    @commands.command()
+    async def snake_pic(self,ctx):
+        imgFile = "./cogs/redditCommands/snake_pictures.txt"
+        await self.send_random_link_from_file(ctx,imgFile)
+    
+    
     def update_pictures(self):
         perSubPictureTotal = 50
         for subreddit,destination in self.subs:
@@ -66,6 +55,18 @@ class redditCommands(commands.Cog):
                     for url in pictures:
                         string += f"{url}\n"
                     file.write(string)
+
+
+    async def send_random_link_from_file(self,ctx,file):
+        now = datetime.datetime.now()
+        duration = now - self.lastUpdated
+        if duration.days >= 1.0:
+            self.update_pictures()
+            self.lastUpdated = now
+
+        with open(file, "r") as f:
+            url = random.choice(f.readlines()).replace("\n", "")
+        await ctx.send(url)
 
 def setup(bot):
     bot.add_cog(redditCommands(bot))
