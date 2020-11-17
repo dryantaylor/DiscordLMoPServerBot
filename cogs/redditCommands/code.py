@@ -3,15 +3,18 @@ from discord.ext import commands
 import json
 import datetime
 import random
-
+import time
 import praw
 
+perSubPictureTotal = 51
+#              (subname , link store file)
+subs = [("cats", "cat_pictures.txt"),("dogpictures","dog_pictures.txt"),("snakes","snake_pictures.txt"),("rabbits","bunny_pictures.txt")]
 class redditCommands(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
-        #              (subname , link store file)
-        self.subs = [("cats", "cat_pictures.txt"),("dogpictures","dog_pictures.txt"),("snakes","snake_pictures.txt"),("rabbits","bunny_pictures.txt")]
-        self.update_pictures()
+
+
+        #self.update_pictures()
         self.lastUpdated = datetime.datetime.now()
         
 
@@ -39,38 +42,17 @@ class redditCommands(commands.Cog):
     async def bnuuy_pic(self,ctx):
         imgFile = "./cogs/redditCommands/bunny_pictures.txt"
         await self.send_random_link_from_file(ctx, imgFile)
-    
-    def update_pictures(self):
-        perSubPictureTotal = 50
-        for subreddit,destination in self.subs:
-            client_id, client_secret, user_agent = load_reddit_API_info()
-            reddit = praw.Reddit(client_id=client_id, client_secret=client_secret, user_agent=user_agent)
-            pictures = []
-            x = 0
-            for subbmission in reddit.subreddit(subreddit).hot(limit=1000):
-                if subbmission.url.split(".")[-1] in ["png", "jpg", "jpeg"]:
-                    pictures.append(subbmission.url)
-                    x += 1
-                if x == perSubPictureTotal:
-                    break
-
-                with open(f"./cogs/redditCommands/{destination}", "w") as file:
-                    string = ""
-                    for url in pictures:
-                        string += f"{url}\n"
-                    file.write(string)
 
 
     async def send_random_link_from_file(self,ctx,file):
-        now = datetime.datetime.now()
-        duration = now - self.lastUpdated
-        if duration.days >= 1.0:
-            self.update_pictures()
-            self.lastUpdated = now
+        while True:
+            with open(file, "r") as f:
+                read = f.readlines()
+                if len(read) >= perSubPictureTotal-1:
+                    url = random.choice(read).replace("\n", "")
+                    await ctx.send(url)
+                    return
 
-        with open(file, "r") as f:
-            url = random.choice(f.readlines()).replace("\n", "")
-        await ctx.send(url)
 
 def setup(bot):
     bot.add_cog(redditCommands(bot))
