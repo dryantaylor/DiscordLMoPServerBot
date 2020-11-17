@@ -10,7 +10,7 @@ class redditCommands(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         #              (subname , link store file)
-        self.subs = [("cats", "cat_pictures.txt"),("dogpictures","dog_pictures.txt"),("snakes","snake_pictures.txt")]
+        self.subs = [("cats", "cat_pictures.txt"),("dogpictures","dog_pictures.txt"),("snakes","snake_pictures.txt"),("rabbits","bunny_pictures.txt")]
         self.update_pictures()
         self.lastUpdated = datetime.datetime.now()
         
@@ -34,7 +34,11 @@ class redditCommands(commands.Cog):
     async def snake_pic(self,ctx):
         imgFile = "./cogs/redditCommands/snake_pictures.txt"
         await self.send_random_link_from_file(ctx,imgFile)
-    
+
+    @commands.command()
+    async def bnuuy_pic(self,ctx):
+        imgFile = "./cogs/redditCommands/bunny_pictures.txt"
+        await self.send_random_link_from_file(ctx, imgFile)
     
     def update_pictures(self):
         perSubPictureTotal = 50
