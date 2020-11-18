@@ -1,10 +1,7 @@
-import discord
 from discord.ext import commands
 import json
 import datetime
 import random
-import time
-import praw
 
 perSubPictureTotal = 51
 #              (subname , link store file)
@@ -57,9 +54,7 @@ class redditCommands(commands.Cog):
 def setup(bot):
     bot.add_cog(redditCommands(bot))
 
-
 def load_reddit_API_info():
     with open("logins.json","r") as file:
         dict = json.loads(file.read())
         return (dict["reddit_client_id"],dict["reddit_client_secret"],dict["reddit_user_agent"])
-
