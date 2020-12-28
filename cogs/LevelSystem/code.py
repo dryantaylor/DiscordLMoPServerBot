@@ -63,6 +63,7 @@ class LevelSystem(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self,ctx):
+        print("hello")
         for member in ctx.members:
             if member.id not in self.exp_table.keys() and not member.bot:
                 self.exp_table[str(member.id)] = [0, 0, 0]
@@ -79,9 +80,10 @@ class LevelSystem(commands.Cog):
         exp_to_next_level = self.calc_exp_to_next_level(user[2])
 
         exp_bar = self.calc_exp_bar_draw(user)
+        rank,n_users = self.calc_user_rank(str(ctx.author.id))
         # ◕  ◔  ⬤  ○ ◐
 
-        await ctx.send(f"{ctx.author.mention}\n```Level: {user[2]} exp:\n{exp_bar} {user[1]}/{exp_to_next_level}```")
+        await ctx.send(f"{ctx.author.mention}\n```Level: {user[2]} rank: {rank}/{n_users}exp:\n{exp_bar} {user[1]}/{exp_to_next_level}```")
 
 
     def calc_exp_to_next_level(self,current_level):
@@ -116,6 +118,25 @@ class LevelSystem(commands.Cog):
         exp_bar += "○" * (exp_bar_length - len(exp_bar))
         # ◕  ◔  ⬤  ○ ◐
         return exp_bar
+
+    def calc_user_rank(self,user_id: str):
+
+        user_level = int(self.exp_table[user_id][2])
+        user_exp = int(self.exp_table[user_id][1])
+        rank = 1
+        n_users = 0
+        user_id = user_id
+        print(type(user_id))
+        for user in self.exp_table.items():
+            if user[0] != user_id:
+                print(user)
+                pass
+                if int(user[1][2]) > user_level or (int(user[1][2]) == user_level and int(user[1][1]) > user_exp): #fiz
+                    rank+=1
+
+            n_users+=1
+
+        return (rank,n_users)
 
 def setup(bot):
     bot.add_cog(LevelSystem(bot))
