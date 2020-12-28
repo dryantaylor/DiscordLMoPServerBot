@@ -31,7 +31,7 @@ class redditCommands(commands.Cog):
      
     
     @commands.command()
-    async def snake_pic(self,ctx):
+    async def snek_pic(self,ctx):
         imgFile = "./cogs/redditCommands/snake_pictures.txt"
         await self.send_random_link_from_file(ctx,imgFile)
 
